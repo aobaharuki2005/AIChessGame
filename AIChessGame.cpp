@@ -87,7 +87,91 @@ void GameManager::create() {    // gan cac gia tri can thiet vao danh sach quan 
 }
 
 void GameManager::play() {
-    cout << "Hello World!" << endl;
+    //cout << "Hello World!" << endl;
+    RenderWindow window(VideoMode(504, 504), "The Chess! Alpha Beta Pruning");  // tao cua so hien thi choi game
+    
+    Texture t1, t2, t3; // load cac file hinh anh
+    t1.loadFromFile("figures.png");
+    t2.loadFromFile("board1.png");
+    t3.loadFromFile("no.png");
+
+    for (int i = 0; i < 32; i++) f[i].s.setTexture(t1);
+    Sprite sBoard(t2);
+    Sprite sPositive(t3);
+
+    create();
+
+    bool LuotChoi = true;   // true = nguoi, false = may
+    Vector2f oldPos, newPos;    // luu vi tri click lan1 va lan2
+    int n = 0, click = 0, count = 0;    // n: luu chi so trong mang f, count: bien thay the positiveMove, positiveMove la bien toan cuc nen thay doi lien tuc
+    Vector2i pos;  // vi tri chuot khi click;
+
+    while (window.isOpen()) {   // ca tro choi la mot vong lap, dieu kien la cua so con mo
+        Event e;    // bat su kien click, close
+
+        while (window.pollEvent(e)) {
+            if (e.type == Event::Closed) window.close();    // sk dong cua so
+            if (e.type == Event::KeyPressed) {  // sk bam phim cach
+                if (e.key.code == Keyboard::BackSpace) undo();
+            }
+            if (e.type == Event::MouseButtonPressed) {  // sk bam chuot
+                if (e.key.code == Mouse::Left) {
+                    pos = Mouse::getPosition(window) - Vector2i(offset);
+                    click++;
+                }
+            }
+
+            if (LuotChoi == true) {
+                if (click == 1) {
+                    bool isMove = false;    // kiem tra xem click dau co hop le khong
+                    for (int i = 16; i < 32; i++) {
+                        if (f[i].s.getGlobalBounds().contains(pos.x + offset.y, pos.y + offset.y)) {
+                            isMove = true;
+                            n = i;
+                            f[n].s.setColor(Color::Green);
+                            oldPos = f[n].s.getPosition();
+                        }
+                    }
+                }
+
+                if (click == 2) {   // neu click thu 2 trong vung co the di thi doi luot choi, khong quay lai
+                    f[n].s.setColor(Color::White);
+                    int x = pos.x / _size_;
+                    int y = pos.y / _size_;
+                    newPos = Vector2f(x * _size_, y * _size_) + offset;
+
+                    // chi di chuyen trong vung positiveMove
+                    for (int i = 0; i < count; i++) {
+                        if (positiveMove[i] == newPos) {
+                            move(n, oldPos, newPos);
+                            LuotChoi = !LuotChoi;
+                        }
+                    }
+
+                    count = 0, click = 0;   //reset
+                }
+
+                else {  // may choi
+                    newPos = getNextMove(LuotChoi);
+                    int c = nS.top();
+                    nS.pop();   // xoa khoi stack, vi ham move tu nhet trong stack roi
+                    move(c, oldPos, newPos);
+                    LuotChoi = !LuotChoi;
+                    click = 0;  //reset
+                }
+
+                // draw
+                window.draw(sBoard);
+                for (int i = 0; i < count; i++) window.draw(sPositive); // to mau cac nuoc co the di
+                for (int i = 0; i < 32; i++) window.draw(f[i].s);    // ve cac quan co
+                window.display();   // Hien thi ra man hinh
+            }
+        }
+
+    }
+
+
+
 }
 
 int main()
