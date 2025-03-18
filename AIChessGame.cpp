@@ -56,9 +56,42 @@ public:
 
 };
 
+// Ham khoi tao game co
+void GameManager::create() {    // gan cac gia tri can thiet vao danh sach quan co
+    positiveCount = 0;  // so nuoc co the di ban dau = 0 (chua chon gi ca)
+    int k = 0;
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; i < 8; j++) {
+            int n = board[i][j];
+            if (n == 0) continue;
+            int x = abs(n) - 1;
+            int y = (n > 0) ? 1 : 0;
+            f[k].index = n;
+            f[k].s.setTextureRect(IntRect(_size_ * x, _size_ * y, _size_, _size_));
+            f[k].s.setPosition(_size_ * j + offset.x, _size_ * i + offset.y);
+
+            // khoi tao chi so cost
+            int v = 0;
+            int g;
+            g = abs(f[k].index);
+            if (g == 1) v = 50;
+            else if (g == 2 || g == 3) v = 30;
+            else if (g == 4) v = 90;
+            else if (g == 5) v = 900;
+            else if (g == 6) v = 10;
+
+            f[k].cost = f[k].index / g * v;
+            k++;
+        }
+
+}
+
+void GameManager::play() {
+    cout << "Hello World!" << endl;
+}
+
 int main()
 {
-    //std::cout << "Hello World!\n";
     GameManager gm;
     gm.play();
     
