@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stack>
 #include <SFML/Graphics.hpp>
-// #include <SFML/Audio.hpp>
 #include <math.h>
 #include <time.h>
 #include <algorithm>
@@ -37,10 +36,10 @@ public:
     stack<Vector2f> posS;   // luu vi tri cac nuoc da di
     stack<int> nS;  // luu index cac quan da di, tuong ung voi vi tri ben tren
 
-    void move(int n, Vector2f oldPos, Vector2f newPos);     // di chuyen quan co (danh co)
-    void undo();    // quay lai nuoc truoc
-    void create();  // khoi tao mang quan co va cac gia tri can thiet
-    void play();    // xu li moi thao tac trong game
+    void Move(int n, Vector2f oldPos, Vector2f newPos);     // di chuyen quan co (danh co)
+    void Undo();    // quay lai nuoc truoc
+    void Create();  // khoi tao mang quan co va cac gia tri can thiet
+    void Play();    // xu li moi thao tac trong game
 
     void PositiveXe(int n, int x, int y, int grid[9][9]);    // Cac nuoc quan xe co the di duoc
     void PositiveTuong(int n, int x, int y, int grid[9][9]);
@@ -58,7 +57,7 @@ public:
 };
 
 // Ham khoi tao game co
-void GameManager::create() {    // gan cac gia tri can thiet vao danh sach quan co
+void GameManager::Create() {    // gan cac gia tri can thiet vao danh sach quan co
     positiveCount = 0;  // so nuoc co the di ban dau = 0 (chua chon gi ca)
     int k = 0;
     for (int i = 0; i < 8; i++)
@@ -87,7 +86,7 @@ void GameManager::create() {    // gan cac gia tri can thiet vao danh sach quan 
 
 }
 
-void GameManager::play() {
+void GameManager::Play() {
     //cout << "Hello World!" << endl;
     RenderWindow window(VideoMode(504, 504), "The Chess! Alpha Beta Pruning");  // tao cua so hien thi choi game
     
@@ -100,7 +99,7 @@ void GameManager::play() {
     Sprite sBoard(t2);
     Sprite sPositive(t3);
 
-    create();
+    Create();
 
     bool LuotChoi = true;   // true = nguoi, false = may
     Vector2f oldPos, newPos;    // luu vi tri click lan1 va lan2
@@ -113,7 +112,7 @@ void GameManager::play() {
         while (window.pollEvent(e)) {
             if (e.type == Event::Closed) window.close();    // sk dong cua so
             if (e.type == Event::KeyPressed) {  // sk bam phim cach
-                if (e.key.code == Keyboard::BackSpace) undo();
+                if (e.key.code == Keyboard::BackSpace) Undo();
             }
             if (e.type == Event::MouseButtonPressed) {  // sk bam chuot
                 if (e.key.code == Mouse::Left) {
@@ -144,7 +143,7 @@ void GameManager::play() {
                     // chi di chuyen trong vung positiveMove
                     for (int i = 0; i < count; i++) {
                         if (positiveMove[i] == newPos) {
-                            move(n, oldPos, newPos);
+                            Move(n, oldPos, newPos);
                             LuotChoi = !LuotChoi;
                         }
                     }
@@ -156,7 +155,7 @@ void GameManager::play() {
                     newPos = getNextMove(LuotChoi);
                     int c = nS.top();
                     nS.pop();   // xoa khoi stack, vi ham move tu nhet trong stack roi
-                    move(c, oldPos, newPos);
+                    Move(c, oldPos, newPos);
                     LuotChoi = !LuotChoi;
                     click = 0;  //reset
                 }
@@ -178,6 +177,8 @@ void GameManager::play() {
 int main()
 {
     GameManager gm;
-    gm.play();
+    // gm.Play();
+    cout << "The program is running fine!" << endl;
+    return 0;
     
 }

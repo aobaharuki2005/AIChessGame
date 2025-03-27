@@ -13,7 +13,11 @@
 				"-o",
 				"${fileDirname}/${fileBasenameNoExtension}",
 				"-I/usr/local/opt/sfml@2/include",
-				"-L/usr/local/opt/sfml@2/lib"
+				"-L/usr/local/opt/sfml@2/lib",
+				"-lsfml-graphics",
+				"-lsfml-window",
+				"-lsfml-system"
+
 			],
 			"options": {
 				"cwd": "${fileDirname}"
